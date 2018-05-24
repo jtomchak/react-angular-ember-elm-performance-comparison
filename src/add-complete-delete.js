@@ -1,79 +1,79 @@
+var suite = (function() {
+  // FACTS
 
-var suite = function() {
+  function getFacts(doc) {
+    var input = doc.getElementsByClassName("new-todo")[0];
+    return input ? { doc: doc, input: input } : undefined;
+  }
 
+  // STEPS
 
-// FACTS
+  function addCompleteDeleteSteps(numItems) {
+    var steps = [];
 
-function getFacts(doc)
-{
-	var input = doc.getElementsByClassName('new-todo')[0];
-	return input ? { doc: doc, input: input } : undefined;
-}
+    for (var i = 0; i < numItems; i++) {
+      steps.push({ name: "Inputing " + i, work: inputTodo(i) });
+      steps.push({ name: "Entering " + i, work: fireKey });
+    }
 
+    for (var i = 0; i < numItems; i++) {
+      steps.push({ name: "Checking " + i, work: click("toggle", i) });
+    }
 
-// STEPS
+    for (var i = 0; i < numItems; i++) {
+      steps.push({ name: "Removing " + i, work: click("destroy", 0) });
+    }
 
-function addCompleteDeleteSteps(numItems)
-{
-	var steps = [];
+    return steps;
+  }
 
-	for (var i = 0; i < numItems; i++)
-	{
-		steps.push({ name: 'Inputing ' + i, work: inputTodo(i) });
-		steps.push({ name: 'Entering ' + i, work: pressEnter });
-	}
+  function inputTodo(number) {
+    return function(facts) {
+      var node = facts.input;
 
-	for (var i = 0; i < numItems; i++)
-	{
-		steps.push({ name: 'Checking ' + i, work: click('toggle', i) });
-	}
+      var inputEvent = document.createEvent("Event");
+      inputEvent.initEvent("input", true, true);
+      node.value = "Nom Nom " + number;
+      node.dispatchEvent(inputEvent);
+    };
+  }
 
-	for (var i = 0; i < numItems; i++)
-	{
-		steps.push({ name: 'Removing ' + i, work: click('destroy', 0) });
-	}
+  function pressEnter(facts) {
+    var event = document.createEvent("Event");
+    event.initEvent("keydown", true, true);
+    event.key = "Enter";
+    event.keyCode = 13;
+    event.which = 13;
+    facts.input.dispatchEvent(event);
+  }
 
-	return steps;
-}
+  function fireKey(facts) {
+    let key = 13;
+    if (document.createEventObject) {
+      var eventObj = document.createEventObject();
+      eventObj.keyCode = key;
+      facts.fireEvent("onkeydown", eventObj);
+      eventObj.keyCode = key;
+    } else if (document.createEvent) {
+      var eventObj = document.createEvent("Events");
+      eventObj.initEvent("keydown", true, true);
+      eventObj.which = key;
+      eventObj.keyCode = key;
+      let target = facts.doc.getElementsByClassName("new-todo")[0];
+      target.dispatchEvent(eventObj);
+    }
+  }
 
-function inputTodo(number)
-{
-	return function(facts)
-	{
-		var node = facts.input;
+  function click(className, index) {
+    return function(facts) {
+      facts.doc.getElementsByClassName(className)[index].click();
+    };
+  }
 
-		var inputEvent = document.createEvent('Event');
-		inputEvent.initEvent('input', true, true);
-		node.value = 'Do task ' + number;
-		node.dispatchEvent(inputEvent);
-	};
-}
+  // SUITE
 
-function pressEnter(facts)
-{
-	var event = document.createEvent('Event');
-	event.initEvent('keydown', true, true);
-	event.key = 'Enter';
-	event.keyCode = 13;
-	event.which = 13;
-	facts.input.dispatchEvent(event);
-}
-
-function click(className, index)
-{
-	return function(facts)
-	{
-		facts.doc.getElementsByClassName(className)[index].click();
-	};
-}
-
-
-// SUITE
-
-return {
-	getFacts: getFacts,
-	steps: addCompleteDeleteSteps(100)
-};
-
-
-}();
+  return {
+    getFacts: getFacts,
+    steps: addCompleteDeleteSteps(100)
+  };
+})();

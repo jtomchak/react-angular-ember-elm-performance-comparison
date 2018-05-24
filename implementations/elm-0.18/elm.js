@@ -8260,142 +8260,659 @@ var _elm_lang$html$Html_Events$Options = F2(
 		return {stopPropagation: a, preventDefault: b};
 	});
 
-var _user$project$Picker$pointer = _elm_lang$html$Html_Attributes$style(
+var _evancz$elm_todomvc$Todo$infoFooter = A2(
+	_elm_lang$html$Html$footer,
 	{
 		ctor: '::',
-		_0: {ctor: '_Tuple2', _0: 'cursor', _1: 'pointer'},
+		_0: _elm_lang$html$Html_Attributes$class('info'),
 		_1: {ctor: '[]'}
-	});
-var _user$project$Picker$toggle = F2(
-	function (id, entries) {
-		var _p0 = entries;
-		if (_p0.ctor === '[]') {
-			return {ctor: '[]'};
-		} else {
-			var _p2 = _p0._1;
-			var _p1 = _p0._0;
-			return _elm_lang$core$Native_Utils.eq(_p1.id, id) ? {
+	},
+	{
+		ctor: '::',
+		_0: A2(
+			_elm_lang$html$Html$p,
+			{ctor: '[]'},
+			{
 				ctor: '::',
-				_0: _elm_lang$core$Native_Utils.update(
-					_p1,
-					{selected: !_p1.selected}),
-				_1: _p2
-			} : {
+				_0: _elm_lang$html$Html$text('Double-click to edit a todo'),
+				_1: {ctor: '[]'}
+			}),
+		_1: {
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$p,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('Written by '),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$a,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$href('https://github.com/evancz'),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text('Evan Czaplicki'),
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}
+				}),
+			_1: {
 				ctor: '::',
-				_0: _p1,
-				_1: A2(_user$project$Picker$toggle, id, _p2)
-			};
+				_0: A2(
+					_elm_lang$html$Html$p,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text('Part of '),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$a,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$href('http://todomvc.com'),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text('TodoMVC'),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}
+					}),
+				_1: {ctor: '[]'}
+			}
 		}
 	});
-var _user$project$Picker$start = _elm_lang$core$Native_Platform.outgoingPort(
-	'start',
-	function (v) {
-		return _elm_lang$core$Native_List.toArray(v).map(
-			function (v) {
-				return {name: v.name, version: v.version, url: v.url, optimized: v.optimized};
-			});
-	});
-var _user$project$Picker$startSelected = function (entries) {
-	return _user$project$Picker$start(
-		A2(
-			_elm_lang$core$List$map,
-			function (_) {
-				return _.impl;
-			},
-			A2(
-				_elm_lang$core$List$filter,
-				function (_) {
-					return _.selected;
-				},
-				entries)));
+var _evancz$elm_todomvc$Todo$viewControlsCount = function (entriesLeft) {
+	var item_ = _elm_lang$core$Native_Utils.eq(entriesLeft, 1) ? ' item' : ' items';
+	return A2(
+		_elm_lang$html$Html$span,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('todo-count'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$strong,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text(
+						_elm_lang$core$Basics$toString(entriesLeft)),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: _elm_lang$html$Html$text(
+					A2(_elm_lang$core$Basics_ops['++'], item_, ' left')),
+				_1: {ctor: '[]'}
+			}
+		});
 };
-var _user$project$Picker$update = F2(
+var _evancz$elm_todomvc$Todo$newEntry = F2(
+	function (desc, id) {
+		return {description: desc, completed: false, editing: false, id: id};
+	});
+var _evancz$elm_todomvc$Todo$emptyModel = {
+	entries: {ctor: '[]'},
+	visibility: 'All',
+	field: '',
+	uid: 0
+};
+var _evancz$elm_todomvc$Todo$init = A2(
+	_elm_lang$core$Platform_Cmd_ops['!'],
+	_evancz$elm_todomvc$Todo$emptyModel,
+	{ctor: '[]'});
+var _evancz$elm_todomvc$Todo$focus = _elm_lang$core$Native_Platform.outgoingPort(
+	'focus',
+	function (v) {
+		return v;
+	});
+var _evancz$elm_todomvc$Todo$update = F2(
 	function (msg, model) {
-		var _p3 = msg;
-		switch (_p3.ctor) {
-			case 'Toggle':
+		var _p0 = msg;
+		switch (_p0.ctor) {
+			case 'NoOp':
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					model,
+					{ctor: '[]'});
+			case 'Add':
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
 					_elm_lang$core$Native_Utils.update(
 						model,
 						{
-							entries: A2(_user$project$Picker$toggle, _p3._0, model.entries)
+							uid: model.uid + 1,
+							field: '',
+							entries: _elm_lang$core$String$isEmpty(model.field) ? model.entries : A2(
+								_elm_lang$core$Basics_ops['++'],
+								model.entries,
+								{
+									ctor: '::',
+									_0: A2(_evancz$elm_todomvc$Todo$newEntry, model.field, model.uid),
+									_1: {ctor: '[]'}
+								})
 						}),
 					{ctor: '[]'});
-			case 'Start':
+			case 'UpdateField':
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
 					_elm_lang$core$Native_Utils.update(
 						model,
-						{running: true}),
+						{field: _p0._0}),
+					{ctor: '[]'});
+			case 'EditingEntry':
+				var _p1 = _p0._0;
+				var updateEntry = function (t) {
+					return _elm_lang$core$Native_Utils.eq(t.id, _p1) ? _elm_lang$core$Native_Utils.update(
+						t,
+						{editing: _p0._1}) : t;
+				};
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{
+							entries: A2(_elm_lang$core$List$map, updateEntry, model.entries)
+						}),
 					{
 						ctor: '::',
-						_0: _user$project$Picker$startSelected(model.entries),
+						_0: _evancz$elm_todomvc$Todo$focus(
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								'#todo-',
+								_elm_lang$core$Basics$toString(_p1))),
 						_1: {ctor: '[]'}
 					});
+			case 'UpdateEntry':
+				var updateEntry = function (t) {
+					return _elm_lang$core$Native_Utils.eq(t.id, _p0._0) ? _elm_lang$core$Native_Utils.update(
+						t,
+						{description: _p0._1}) : t;
+				};
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{
+							entries: A2(_elm_lang$core$List$map, updateEntry, model.entries)
+						}),
+					{ctor: '[]'});
+			case 'Delete':
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{
+							entries: A2(
+								_elm_lang$core$List$filter,
+								function (t) {
+									return !_elm_lang$core$Native_Utils.eq(t.id, _p0._0);
+								},
+								model.entries)
+						}),
+					{ctor: '[]'});
+			case 'DeleteComplete':
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{
+							entries: A2(
+								_elm_lang$core$List$filter,
+								function (_p2) {
+									return !function (_) {
+										return _.completed;
+									}(_p2);
+								},
+								model.entries)
+						}),
+					{ctor: '[]'});
+			case 'Check':
+				var updateEntry = function (t) {
+					return _elm_lang$core$Native_Utils.eq(t.id, _p0._0) ? _elm_lang$core$Native_Utils.update(
+						t,
+						{completed: _p0._1}) : t;
+				};
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{
+							entries: A2(_elm_lang$core$List$map, updateEntry, model.entries)
+						}),
+					{ctor: '[]'});
+			case 'CheckAll':
+				var updateEntry = function (t) {
+					return _elm_lang$core$Native_Utils.update(
+						t,
+						{completed: _p0._0});
+				};
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{
+							entries: A2(_elm_lang$core$List$map, updateEntry, model.entries)
+						}),
+					{ctor: '[]'});
 			default:
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
 					_elm_lang$core$Native_Utils.update(
 						model,
-						{running: false}),
+						{visibility: _p0._0}),
 					{ctor: '[]'});
 		}
 	});
-var _user$project$Picker$end = _elm_lang$core$Native_Platform.incomingPort(
-	'end',
-	_elm_lang$core$Json_Decode$null(
-		{ctor: '_Tuple0'}));
-var _user$project$Picker$Model = F2(
-	function (a, b) {
-		return {running: a, entries: b};
-	});
-var _user$project$Picker$Entry = F3(
-	function (a, b, c) {
-		return {selected: a, id: b, impl: c};
-	});
-var _user$project$Picker$init = function (impls) {
-	return A2(
-		_elm_lang$core$Platform_Cmd_ops['!'],
-		{
-			running: false,
-			entries: A2(
-				_elm_lang$core$List$indexedMap,
-				_user$project$Picker$Entry(false),
-				impls)
-		},
-		{ctor: '[]'});
-};
-var _user$project$Picker$Impl = F4(
+var _evancz$elm_todomvc$Todo$Model = F4(
 	function (a, b, c, d) {
-		return {name: a, version: b, url: c, optimized: d};
+		return {entries: a, field: b, uid: c, visibility: d};
 	});
-var _user$project$Picker$End = {ctor: 'End'};
-var _user$project$Picker$subscriptions = function (model) {
-	return _user$project$Picker$end(
-		_elm_lang$core$Basics$always(_user$project$Picker$End));
+var _evancz$elm_todomvc$Todo$Entry = F4(
+	function (a, b, c, d) {
+		return {description: a, completed: b, editing: c, id: d};
+	});
+var _evancz$elm_todomvc$Todo$ChangeVisibility = function (a) {
+	return {ctor: 'ChangeVisibility', _0: a};
 };
-var _user$project$Picker$Start = {ctor: 'Start'};
-var _user$project$Picker$Toggle = function (a) {
-	return {ctor: 'Toggle', _0: a};
-};
-var _user$project$Picker$viewEntry = F2(
-	function (running, _p4) {
-		var _p5 = _p4;
-		var _p6 = _p5.impl;
+var _evancz$elm_todomvc$Todo$visibilitySwap = F3(
+	function (uri, visibility, actualVisibility) {
 		return A2(
 			_elm_lang$html$Html$li,
-			running ? {
+			{
 				ctor: '::',
-				_0: _user$project$Picker$pointer,
+				_0: _elm_lang$html$Html_Events$onClick(
+					_evancz$elm_todomvc$Todo$ChangeVisibility(visibility)),
 				_1: {ctor: '[]'}
-			} : {
+			},
+			{
 				ctor: '::',
-				_0: _user$project$Picker$pointer,
+				_0: A2(
+					_elm_lang$html$Html$a,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$href(uri),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$classList(
+								{
+									ctor: '::',
+									_0: {
+										ctor: '_Tuple2',
+										_0: 'selected',
+										_1: _elm_lang$core$Native_Utils.eq(visibility, actualVisibility)
+									},
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(visibility),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			});
+	});
+var _evancz$elm_todomvc$Todo$viewControlsFilters = function (visibility) {
+	return A2(
+		_elm_lang$html$Html$ul,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('filters'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A3(_evancz$elm_todomvc$Todo$visibilitySwap, '#/', 'All', visibility),
+			_1: {
+				ctor: '::',
+				_0: _elm_lang$html$Html$text(' '),
 				_1: {
 					ctor: '::',
-					_0: _elm_lang$html$Html_Events$onClick(
-						_user$project$Picker$Toggle(_p5.id)),
+					_0: A3(_evancz$elm_todomvc$Todo$visibilitySwap, '#/active', 'Active', visibility),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(' '),
+						_1: {
+							ctor: '::',
+							_0: A3(_evancz$elm_todomvc$Todo$visibilitySwap, '#/completed', 'Completed', visibility),
+							_1: {ctor: '[]'}
+						}
+					}
+				}
+			}
+		});
+};
+var _evancz$elm_todomvc$Todo$CheckAll = function (a) {
+	return {ctor: 'CheckAll', _0: a};
+};
+var _evancz$elm_todomvc$Todo$Check = F2(
+	function (a, b) {
+		return {ctor: 'Check', _0: a, _1: b};
+	});
+var _evancz$elm_todomvc$Todo$DeleteComplete = {ctor: 'DeleteComplete'};
+var _evancz$elm_todomvc$Todo$viewControlsClear = function (entriesCompleted) {
+	return A2(
+		_elm_lang$html$Html$button,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('clear-completed'),
+			_1: {
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$hidden(
+					_elm_lang$core$Native_Utils.eq(entriesCompleted, 0)),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$html$Html_Events$onClick(_evancz$elm_todomvc$Todo$DeleteComplete),
+					_1: {ctor: '[]'}
+				}
+			}
+		},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html$text(
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					'Clear completed (',
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						_elm_lang$core$Basics$toString(entriesCompleted),
+						')'))),
+			_1: {ctor: '[]'}
+		});
+};
+var _evancz$elm_todomvc$Todo$viewControls = F2(
+	function (visibility, entries) {
+		var entriesCompleted = _elm_lang$core$List$length(
+			A2(
+				_elm_lang$core$List$filter,
+				function (_) {
+					return _.completed;
+				},
+				entries));
+		var entriesLeft = _elm_lang$core$List$length(entries) - entriesCompleted;
+		return A2(
+			_elm_lang$html$Html$footer,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('footer'),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$hidden(
+						_elm_lang$core$List$isEmpty(entries)),
+					_1: {ctor: '[]'}
+				}
+			},
+			{
+				ctor: '::',
+				_0: _evancz$elm_todomvc$Todo$viewControlsCount(entriesLeft),
+				_1: {
+					ctor: '::',
+					_0: _evancz$elm_todomvc$Todo$viewControlsFilters(visibility),
+					_1: {
+						ctor: '::',
+						_0: _evancz$elm_todomvc$Todo$viewControlsClear(entriesCompleted),
+						_1: {ctor: '[]'}
+					}
+				}
+			});
+	});
+var _evancz$elm_todomvc$Todo$Delete = function (a) {
+	return {ctor: 'Delete', _0: a};
+};
+var _evancz$elm_todomvc$Todo$Add = {ctor: 'Add'};
+var _evancz$elm_todomvc$Todo$UpdateEntry = F2(
+	function (a, b) {
+		return {ctor: 'UpdateEntry', _0: a, _1: b};
+	});
+var _evancz$elm_todomvc$Todo$EditingEntry = F2(
+	function (a, b) {
+		return {ctor: 'EditingEntry', _0: a, _1: b};
+	});
+var _evancz$elm_todomvc$Todo$UpdateField = function (a) {
+	return {ctor: 'UpdateField', _0: a};
+};
+var _evancz$elm_todomvc$Todo$NoOp = {ctor: 'NoOp'};
+var _evancz$elm_todomvc$Todo$onEnter = function (msg) {
+	var tagger = function (code) {
+		return _elm_lang$core$Native_Utils.eq(code, 13) ? msg : _evancz$elm_todomvc$Todo$NoOp;
+	};
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'keydown',
+		A2(_elm_lang$core$Json_Decode$map, tagger, _elm_lang$html$Html_Events$keyCode));
+};
+var _evancz$elm_todomvc$Todo$viewInput = function (task) {
+	return A2(
+		_elm_lang$html$Html$header,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('header'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$h1,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('todos'),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$input,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$class('new-todo'),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$placeholder('What needs to be done?'),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$autofocus(true),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$value(task),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$name('newTodo'),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html_Events$onInput(_evancz$elm_todomvc$Todo$UpdateField),
+											_1: {
+												ctor: '::',
+												_0: _evancz$elm_todomvc$Todo$onEnter(_evancz$elm_todomvc$Todo$Add),
+												_1: {ctor: '[]'}
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					{ctor: '[]'}),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _evancz$elm_todomvc$Todo$viewEntry = function (todo) {
+	return A2(
+		_elm_lang$html$Html$li,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$classList(
+				{
+					ctor: '::',
+					_0: {ctor: '_Tuple2', _0: 'completed', _1: todo.completed},
+					_1: {
+						ctor: '::',
+						_0: {ctor: '_Tuple2', _0: 'editing', _1: todo.editing},
+						_1: {ctor: '[]'}
+					}
+				}),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$div,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class('view'),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$input,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$class('toggle'),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$type_('checkbox'),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$checked(todo.completed),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Events$onClick(
+											A2(_evancz$elm_todomvc$Todo$Check, todo.id, !todo.completed)),
+										_1: {ctor: '[]'}
+									}
+								}
+							}
+						},
+						{ctor: '[]'}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$label,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Events$onDoubleClick(
+									A2(_evancz$elm_todomvc$Todo$EditingEntry, todo.id, true)),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text(todo.description),
+								_1: {ctor: '[]'}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$button,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$class('destroy'),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Events$onClick(
+											_evancz$elm_todomvc$Todo$Delete(todo.id)),
+										_1: {ctor: '[]'}
+									}
+								},
+								{ctor: '[]'}),
+							_1: {ctor: '[]'}
+						}
+					}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$input,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$class('edit'),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$value(todo.description),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$name('title'),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$id(
+										A2(
+											_elm_lang$core$Basics_ops['++'],
+											'todo-',
+											_elm_lang$core$Basics$toString(todo.id))),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Events$onInput(
+											_evancz$elm_todomvc$Todo$UpdateEntry(todo.id)),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html_Events$onBlur(
+												A2(_evancz$elm_todomvc$Todo$EditingEntry, todo.id, false)),
+											_1: {
+												ctor: '::',
+												_0: _evancz$elm_todomvc$Todo$onEnter(
+													A2(_evancz$elm_todomvc$Todo$EditingEntry, todo.id, false)),
+												_1: {ctor: '[]'}
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					{ctor: '[]'}),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _evancz$elm_todomvc$Todo$viewEntries = F2(
+	function (visibility, entries) {
+		var cssVisibility = _elm_lang$core$List$isEmpty(entries) ? 'hidden' : 'visible';
+		var allCompleted = A2(
+			_elm_lang$core$List$all,
+			function (_) {
+				return _.completed;
+			},
+			entries);
+		var isVisible = function (todo) {
+			var _p3 = visibility;
+			switch (_p3) {
+				case 'Completed':
+					return todo.completed;
+				case 'Active':
+					return !todo.completed;
+				default:
+					return true;
+			}
+		};
+		return A2(
+			_elm_lang$html$Html$section,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('main'),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$style(
+						{
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: 'visibility', _1: cssVisibility},
+							_1: {ctor: '[]'}
+						}),
 					_1: {ctor: '[]'}
 				}
 			},
@@ -8405,138 +8922,119 @@ var _user$project$Picker$viewEntry = F2(
 					_elm_lang$html$Html$input,
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$type_('checkbox'),
+						_0: _elm_lang$html$Html_Attributes$class('toggle-all'),
 						_1: {
 							ctor: '::',
-							_0: _elm_lang$html$Html_Attributes$checked(_p5.selected),
+							_0: _elm_lang$html$Html_Attributes$type_('checkbox'),
 							_1: {
 								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$disabled(running),
-								_1: {ctor: '[]'}
+								_0: _elm_lang$html$Html_Attributes$name('toggle'),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$checked(allCompleted),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Events$onClick(
+											_evancz$elm_todomvc$Todo$CheckAll(!allCompleted)),
+										_1: {ctor: '[]'}
+									}
+								}
 							}
 						}
 					},
 					{ctor: '[]'}),
 				_1: {
 					ctor: '::',
-					_0: _elm_lang$html$Html$text(
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							' ',
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								_p6.name,
-								A2(_elm_lang$core$Basics_ops['++'], ' ', _p6.version)))),
+					_0: A2(
+						_elm_lang$html$Html$label,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$for('toggle-all'),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text('Mark all as complete'),
+							_1: {ctor: '[]'}
+						}),
 					_1: {
 						ctor: '::',
 						_0: A2(
-							_elm_lang$html$Html$span,
+							_elm_lang$html$Html$ul,
 							{
 								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$style(
-									{
-										ctor: '::',
-										_0: {ctor: '_Tuple2', _0: 'color', _1: '#aaa'},
-										_1: {ctor: '[]'}
-									}),
+								_0: _elm_lang$html$Html_Attributes$class('todo-list'),
 								_1: {ctor: '[]'}
 							},
-							{
-								ctor: '::',
-								_0: _elm_lang$html$Html$text(
-									_p6.optimized ? ' (optimized)' : ''),
-								_1: {ctor: '[]'}
-							}),
+							A2(
+								_elm_lang$core$List$map,
+								_evancz$elm_todomvc$Todo$viewEntry,
+								A2(_elm_lang$core$List$filter, isVisible, entries))),
 						_1: {ctor: '[]'}
 					}
 				}
 			});
 	});
-var _user$project$Picker$view = function (_p7) {
-	var _p8 = _p7;
-	var _p9 = _p8.running;
+var _evancz$elm_todomvc$Todo$view = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
-		{ctor: '[]'},
 		{
 			ctor: '::',
-			_0: A2(
-				_elm_lang$html$Html$ul,
-				_p9 ? {
-					ctor: '::',
-					_0: _elm_lang$html$Html_Attributes$style(
-						{
-							ctor: '::',
-							_0: {ctor: '_Tuple2', _0: 'color', _1: '#aaa'},
-							_1: {ctor: '[]'}
-						}),
-					_1: {ctor: '[]'}
-				} : {ctor: '[]'},
-				A2(
-					_elm_lang$core$List$map,
-					_user$project$Picker$viewEntry(_p9),
-					_p8.entries)),
+			_0: _elm_lang$html$Html_Attributes$class('todomvc-wrapper'),
 			_1: {
 				ctor: '::',
-				_0: A2(
-					_elm_lang$html$Html$button,
+				_0: _elm_lang$html$Html_Attributes$style(
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$style(
-							{
-								ctor: '::',
-								_0: {ctor: '_Tuple2', _0: 'width', _1: '100%'},
-								_1: {ctor: '[]'}
-							}),
-						_1: {
-							ctor: '::',
-							_0: _elm_lang$html$Html_Attributes$disabled(_p9),
-							_1: {
-								ctor: '::',
-								_0: _elm_lang$html$Html_Events$onClick(_user$project$Picker$Start),
-								_1: {ctor: '[]'}
-							}
-						}
-					},
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html$text('Run'),
+						_0: {ctor: '_Tuple2', _0: 'visibility', _1: 'hidden'},
 						_1: {ctor: '[]'}
 					}),
 				_1: {ctor: '[]'}
 			}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$section,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class('todoapp'),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: _evancz$elm_todomvc$Todo$viewInput(model.field),
+					_1: {
+						ctor: '::',
+						_0: A2(_evancz$elm_todomvc$Todo$viewEntries, model.visibility, model.entries),
+						_1: {
+							ctor: '::',
+							_0: A2(_evancz$elm_todomvc$Todo$viewControls, model.visibility, model.entries),
+							_1: {ctor: '[]'}
+						}
+					}
+				}),
+			_1: {
+				ctor: '::',
+				_0: _evancz$elm_todomvc$Todo$infoFooter,
+				_1: {ctor: '[]'}
+			}
 		});
 };
-var _user$project$Picker$main = _elm_lang$html$Html$programWithFlags(
-	{init: _user$project$Picker$init, view: _user$project$Picker$view, update: _user$project$Picker$update, subscriptions: _user$project$Picker$subscriptions})(
-	_elm_lang$core$Json_Decode$list(
-		A2(
-			_elm_lang$core$Json_Decode$andThen,
-			function (name) {
-				return A2(
-					_elm_lang$core$Json_Decode$andThen,
-					function (optimized) {
-						return A2(
-							_elm_lang$core$Json_Decode$andThen,
-							function (url) {
-								return A2(
-									_elm_lang$core$Json_Decode$andThen,
-									function (version) {
-										return _elm_lang$core$Json_Decode$succeed(
-											{name: name, optimized: optimized, url: url, version: version});
-									},
-									A2(_elm_lang$core$Json_Decode$field, 'version', _elm_lang$core$Json_Decode$string));
-							},
-							A2(_elm_lang$core$Json_Decode$field, 'url', _elm_lang$core$Json_Decode$string));
-					},
-					A2(_elm_lang$core$Json_Decode$field, 'optimized', _elm_lang$core$Json_Decode$bool));
-			},
-			A2(_elm_lang$core$Json_Decode$field, 'name', _elm_lang$core$Json_Decode$string))));
+var _evancz$elm_todomvc$Todo$main = _elm_lang$html$Html$program(
+	{
+		init: _evancz$elm_todomvc$Todo$init,
+		view: _evancz$elm_todomvc$Todo$view,
+		update: _evancz$elm_todomvc$Todo$update,
+		subscriptions: function (_p4) {
+			return _elm_lang$core$Platform_Sub$none;
+		}
+	})();
 
 var Elm = {};
-Elm['Picker'] = Elm['Picker'] || {};
-if (typeof _user$project$Picker$main !== 'undefined') {
-    _user$project$Picker$main(Elm['Picker'], 'Picker', undefined);
+Elm['Todo'] = Elm['Todo'] || {};
+if (typeof _evancz$elm_todomvc$Todo$main !== 'undefined') {
+    _evancz$elm_todomvc$Todo$main(Elm['Todo'], 'Todo', undefined);
 }
 
 if (typeof define === "function" && define['amd'])

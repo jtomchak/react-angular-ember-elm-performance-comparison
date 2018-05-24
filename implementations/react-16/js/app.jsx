@@ -7,7 +7,6 @@ var app = app || {};
 
 (function() {
   "use strict";
-
   app.ALL_TODOS = "all";
   app.ACTIVE_TODOS = "active";
   app.COMPLETED_TODOS = "completed";
@@ -129,7 +128,7 @@ var app = app || {};
     this.inform();
   };
 
-  var TodoFooter = React.createClass({
+  var TodoFooter = React.Component({
     render: function() {
       var activeTodoWord = app.Utils.pluralize(this.props.count, "item");
       var clearButton = null;
@@ -192,7 +191,7 @@ var app = app || {};
   var ESCAPE_KEY = 27;
   var ENTER_KEY = 13;
 
-  var TodoItem = React.createClass({
+  var TodoItem = React.Component({
     handleSubmit: function(event) {
       var val = this.state.editText.trim();
       if (val) {
@@ -225,6 +224,21 @@ var app = app || {};
 
     getInitialState: function() {
       return { editText: this.props.todo.title };
+    },
+
+    /**
+     * This is a completely optional performance enhancement that you can
+     * implement on any React component. If you were to delete this method
+     * the app would still work correctly (and still be very performant!), we
+     * just use it as an example of how little code it takes to get an order
+     * of magnitude performance improvement.
+     */
+    shouldComponentUpdate: function(nextProps, nextState) {
+      return (
+        nextProps.todo !== this.props.todo ||
+        nextProps.editing !== this.props.editing ||
+        nextState.editText !== this.state.editText
+      );
     },
 
     /**
@@ -264,7 +278,6 @@ var app = app || {};
           <input
             ref="editField"
             className="edit"
-            tabIndex="0"
             value={this.state.editText}
             onBlur={this.handleSubmit}
             onChange={this.handleChange}
@@ -277,7 +290,7 @@ var app = app || {};
 
   var ENTER_KEY = 13;
 
-  var TodoApp = React.createClass({
+  var TodoApp = React.Component({
     getInitialState: function() {
       return {
         nowShowing: app.ALL_TODOS,
@@ -364,6 +377,7 @@ var app = app || {};
       var todoItems = shownTodos.map(function(todo) {
         return (
           <TodoItem
+            key={todo.id}
             todo={todo}
             onToggle={this.toggle.bind(this, todo)}
             onDestroy={this.destroy.bind(this, todo)}
